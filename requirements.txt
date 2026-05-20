@@ -1,0 +1,9 @@
+streamlit
+# pandas -- já está incluso no streamlit
+numpy
+matplotlib
+seaborn
+plotly
+pyarrow
+openpyxl
+world_bank_data

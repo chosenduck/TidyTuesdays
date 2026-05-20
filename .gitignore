@@ -1,0 +1,18 @@
+# Ambientes Virtuais
+.venv/
+venv/
+ENV/
+
+# Caches do Python
+__pycache__/
+*.pyc
+
+# Dados
+data/
+
+# Caches do Streamlit e IDEs
+.streamlit/
+.ipynb_checkpoints/
+.vscode/
+
+.DS_Store
