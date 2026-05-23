@@ -1,38 +1,82 @@
 import streamlit as st
-import seaborn as sns
 
-from utils.data_loader import carregar_dados
-from utils.data_processor import preparar_hs, para_bilhoes
-from utils.constants import FMT_BI, CORES
+from utils.data_loader import carregar_conexao
+from utils.data_transformer import executar_transformacoes
 
-from utils.graficos import grafico_hs_linha
+from utils.data_viz import gasto_total_brasil, plot_gasto_publico_brasil, plot_evolucao_pub_x_priv, plot_perfil_financiamento_brasil, plot_gasto_pc_brics
 
+# CARREGAR DADOS
+con = carregar_conexao()
+executar_transformacoes(con)
 
-# ─── Configuração visual ─────────────────────────────
-sns.set_theme(style="whitegrid")
+# st.subheader("Silver")
+#silver = con.sql("""
+#    SELECT *
+#    FROM silver_financing_schemes
+#    LIMIT 20
+#""").df()
+#st.dataframe(silver)
 
-st.title("🌍 Global Health Spending")
-st.write("O Brasil gasta bem em saúde, ou apenas gasta muito?")
+#st.subheader("Gold")
+#gold = con.sql("""
+#    SELECT *
+#    FROM silver_health_spending
+#    WHERE country_name == 'Brazil'
+#""").df()
+#st.dataframe(gold)
 
-# ─── 1. Carregar dados ───────────────────────────────
-health_spending, financing_schemes, spending_purpose = carregar_dados()
-
-# ─── 2. Preparar dados ──────────────────────────────
-df_hs = preparar_hs(health_spending, ["Brazil"])
-
-df_hs_abs = (
-    df_hs[df_hs["indicator_code"] == "gghed_usd2023"]
-    .pipe(para_bilhoes, ["value"])
-    .rename(columns={"value": "value_bi"})
+# CONFIGURAÇÃO DA PÁGINA
+st.set_page_config(
+    page_title="O Brasil gasta bem em saúde?",
+    page_icon="🩺",
+    layout="wide"
 )
 
-# ─── 4. Visualizar ──────────────────────────────────
-fig = grafico_hs_linha(
-    df=df_hs_abs,
-    col_y="value_bi",
-    titulo="O Brasil hoje gasta mais que o dobro com saúde pública do que há 20 anos",
-    cor=CORES["governo"],
-    fmt=FMT_BI,
-)
+# HEADER
+st.title("🌍 O Brasil gasta bem em saúde?")
+st.markdown("_v.1.0_")
+st.write("""Análise do Global Health Expenditure Database (WHO) — TidyTuesday de 21 Abril 2026""")
+st.divider()
 
-st.plotly_chart(fig, use_container_width=True)
+# SEÇÃO 1
+st.header("Quanto gastamos?")
+
+# Cards
+m1, m2, m3 = st.columns(3)
+m1.metric(label="Gasto total (2023)", value="—", delta="—")
+m2.metric(label="Gasto per capita",   value="—", delta="—")
+m3.metric(label="% do PIB",           value="—", delta="—")
+st.divider()
+
+# Gráfico 1
+fig = gasto_total_brasil(con)
+with st.container(border=True):
+    st.plotly_chart(fig, width='stretch')
+
+# Gráfico 2
+fig2 = plot_gasto_publico_brasil(con)
+with st.container(border=True):
+    st.plotly_chart(fig2, width='stretch')
+
+# Gráfico 3
+fig3 = plot_evolucao_pub_x_priv(con)
+with st.container(border=True):
+    st.plotly_chart(fig3, width='stretch')
+
+st.divider()
+
+# SEÇÃO 2
+st.header("Como financiamos?")
+
+fig4 = plot_perfil_financiamento_brasil(con)
+with st.container(border=True):
+    st.plotly_chart(fig4, width='stretch')
+
+fig5 = plot_gasto_pc_brics(con)
+with st.container(border=True):
+    st.plotly_chart(fig5, width='stretch')
+
+# SEÇÃO 3
+st.header("Em que gastamos?")
+
+# FOOTER

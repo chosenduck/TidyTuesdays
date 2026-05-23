@@ -1,21 +1,34 @@
 from matplotlib.ticker import FuncFormatter
+from pathlib import Path
+import world_bank_data as wb
 
 FMT_BI  = FuncFormatter(lambda y, _: f"US$ {y:.0f}bi")
 FMT_PCT = FuncFormatter(lambda y, _: f"{y:.0f}%")
+
+# ─── Grupos de países ─────────────────────────────────────────
+PAISES_BRICS = ("Brazil", "Russian Federation", "India", "China", "South Africa")
+PAISES_UNIVERSAL = ("Brazil", "United Kingdom of Great Britain and Northern Ireland", "Canada", "France", "Spain", "Australia", "Uruguay", "Sweden", "Portugal")
+
+ISO_PAISES = ['BRA', 'RUS', 'IND', 'CHN', 'ZAF', 'FRA', 'ESP', 'GBR', 'CAN', 'URY', 'SWE', 'PRT', 'AUS']
+
 # ─── URLs ─────────────────────────────────────────────────────
 BASE_URL = "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21"
+
+# ─── Diretórios ───────────────────────────────────────────────
+DATA_DIR = Path("data")
+CACHE_DIR = DATA_DIR / "raw"
+DB_DIR = DATA_DIR / "warehouse"
+
+ARQUIVOS = {
+    "health_spending":   f"{BASE_URL}/health_spending.csv",
+    "financing_schemes": f"{BASE_URL}/financing_schemes.csv",
+    "spending_purpose":  f"{BASE_URL}/spending_purpose.csv",
+    "population": wb.get_series('SP.POP.TOTL', country=ISO_PAISES, date='2000:2023').reset_index()
+}
 
 # ─── Textos de rodapé ─────────────────────────────────────────
 FONTE = "Fonte: WHO Global Health Expenditure Database. Elaboração própria."
 NOTA  = "Nota: Valores em US$ constantes de 2023."
-
-# ─── Grupos de países ─────────────────────────────────────────
-PAISES_BRICS = ["Brazil", "Russian Federation", "India", "China", "South Africa"]
-PAISES_UNIVERSAL = [
-    "Brazil",
-    "United Kingdom of Great Britain and Northern Ireland",
-    "Canada", "France", "Spain", "Australia", "Uruguay", "Sweden", "Portugal"
-]
 
 # ─── Tradução de nomes ────────────────────────────────────────
 NOMES_PAISES = {
@@ -142,3 +155,23 @@ CORES = {
 CORES_HS_INDIC = [CORES["governo"], CORES["privado"], CORES["externo"]]
 CORES_FS_INDIC = [CORES["governo"], CORES["privado"], CORES["oop"], CORES["externo"], CORES["outro"]]
 CORES_SP_GRUP  = [CORES["Reativo"], CORES["Recuperativo/Suporte"], CORES["Preventivo/Proativo"], CORES["Outros_sp"]]
+
+
+# Paleta de Cores 
+COR_LINHA  = "#fc8181"
+COR_BARRAS = "#63b3ed"  
+
+COR_GOV  = "#2ca02c"
+COR_PRIV = "#f4c300"
+
+COMPONENTES = ["SUS", "Planos de Saúde", "Desembolso Direto", "Não Identificado"]
+CORES_FS    = ["#63b3ed", "#fc8181", "#f6ad55", "#a0aec0"]
+
+PAISES_ORDEM = ["África do Sul", "Brasil", "China", "Índia", "Rússia"]
+CORES_BRICS  = {
+        "Brasil":        "#f4c300",
+        "China":         "#de2910",
+        "Índia":         "#ff9933",
+        "Rússia":        "#3b5aa3",
+        "África do Sul": "#007749",
+    }

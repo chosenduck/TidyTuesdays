@@ -6,12 +6,13 @@ Análise exploratória e visualização dos gastos globais com saúde baseada no
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/seu-usuario/meu-projeto-saude.git](https://github.com/seu-usuario/meu-projeto-saude.git)
-   cd meu-projeto-saude
+   git clone https://github.com/chosenduck/TidyTuesdays
+   cd TidyTuesdays
    ```
 2. **Crie e ative um ambiente virtual:**
    ```bash
    python -m venv .venv
+   Set-ExecutionPolicy Bypass -Scope Process
    .venv\Scripts\activate
    ```
 3. **Instale as dependências**

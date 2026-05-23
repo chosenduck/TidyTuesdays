@@ -7,3 +7,4 @@ plotly
 pyarrow
 openpyxl
 world_bank_data
+duckdb

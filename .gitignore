@@ -9,13 +9,19 @@ __pycache__/
 
 # Dados
 data/
+data/cache/
+data/raw
+data/warehouse
 
 # Caches do Streamlit e IDEs
 .streamlit/
 .ipynb_checkpoints/
 .vscode/
 
-# Outros
+# Arquivos do sistema
 desktop.ini
 .DS_Store
+Thumbs.db
+
+# Documentação/local
 guia_git.md
