@@ -110,11 +110,11 @@ RENOMEAR_SP_PT = {
 
 MAPA_GRUPAMENTO = {
     "hc1": "Reativo",
-    "hc2": "Recuperativo/Suporte",
-    "hc3": "Recuperativo/Suporte",
-    "hc4": "Recuperativo/Suporte",
-    "hc5": "Recuperativo/Suporte",
-    "hc6": "Preventivo/Proativo",
+    "hc2": "Recuperativo",
+    "hc3": "Recuperativo",
+    "hc4": "Recuperativo",
+    "hc5": "Recuperativo",
+    "hc6": "Preventivo",
     "hc7": "Outros",
     "hc9": "Outros",
 }
@@ -158,13 +158,18 @@ CORES_SP_GRUP  = [CORES["Reativo"], CORES["Recuperativo/Suporte"], CORES["Preven
 
 
 # Paleta de Cores 
-COR_LINHA  = "#fc8181"
-COR_BARRAS = "#63b3ed"  
+COR_LINHA  = "#3b5aa3"
+COR_BARRAS = "#f4c300"
+COR_EIXOS =  "#a0aec0"
 
 COR_GOV  = "#2ca02c"
 COR_PRIV = "#f4c300"
+COR_DESEMB = "#3b5aa3"
+COR_NAO = "#a0aec0"
+COR_RAZAO = "#c03927"
 
 COMPONENTES = ["SUS", "Planos de Saúde", "Desembolso Direto", "Não Identificado"]
+
 CORES_FS    = ["#63b3ed", "#fc8181", "#f6ad55", "#a0aec0"]
 
 PAISES_ORDEM = ["África do Sul", "Brasil", "China", "Índia", "Rússia"]
@@ -175,3 +180,9 @@ CORES_BRICS  = {
         "Rússia":        "#3b5aa3",
         "África do Sul": "#007749",
     }
+
+    # Spending purpose — grupos
+COR_REAT = "#2ca02c"
+COR_REC = "#f4c300"
+COR_PREV = "#3b5aa3"
+COR_OUT = "#a0aec0"

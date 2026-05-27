@@ -12,7 +12,7 @@ Análise exploratória e visualização dos gastos globais com saúde baseada no
 2. **Crie e ative um ambiente virtual:**
    ```bash
    python -m venv .venv
-   Set-ExecutionPolicy Bypass -Scope Process
+   Set-ExecutionPolicy Bypass -Scope CurrentUser
    .venv\Scripts\activate
    ```
 3. **Instale as dependências**

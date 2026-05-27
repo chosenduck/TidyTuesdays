@@ -208,7 +208,7 @@ def criar_camadas_gold(con: duckdb.DuckDBPyConnection) -> None:
                             THEN value
                         ELSE 0
                     END
-                ) AS hc1,
+                ) / 1e9 AS hc1,
 
                 SUM(
                     CASE
@@ -216,7 +216,7 @@ def criar_camadas_gold(con: duckdb.DuckDBPyConnection) -> None:
                             THEN value
                         ELSE 0
                     END
-                ) AS hc6
+                ) / 1e9 AS hc6
 
             FROM silver_spending_purpose
 
