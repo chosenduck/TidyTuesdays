@@ -43,7 +43,7 @@ st.set_page_config(
 
 # HEADER
 st.title("O Brasil gasta bem em saúde?")
-st.markdown( """ Análise do Global Health Expenditure Database (WHO) — TidyTuesday de 21 Abril de 2026 """ )
+st.markdown( """Análise do Global Health Expenditure Database (WHO) — TidyTuesday de 21 Abril de 2026""" )
 st.caption("por João Victor Fernandes") 
 st.caption("v1.3")
 
