@@ -313,7 +313,7 @@ def plot_gasto_total_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -326,7 +326,7 @@ def plot_gasto_total_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 ),
         ],
 
-        margin=dict(b=100),
+        margin=dict(t=90, b=70, r=20, l=20),
         template="plotly_white",
         hovermode="x",
         hoverlabel=dict(
@@ -430,9 +430,7 @@ def plot_gasto_pct_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
     fig.update_layout(
 
         title=dict(
-            text=("Mesmo com o crescimento do gasto em saúde, "
-            "<br>"
-            "a divisão público-privada pouco mudou em 23 anos"),
+            text=("Mesmo com o crescimento do gasto em saúde, a divisão público-privada pouco mudou em 23 anos"),
             x=0.5,
             y=0.93,
             xanchor="center",
@@ -450,7 +448,7 @@ def plot_gasto_pct_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -463,7 +461,7 @@ def plot_gasto_pct_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 ),
         ],
 
-        margin=dict(b=100),
+        margin=dict(t=90, b=70, r=20, l=20),
 
         template="plotly_white",
 
@@ -475,7 +473,7 @@ def plot_gasto_pct_brasil(con: duckdb.DuckDBPyConnection) -> go.Figure:
             ),
 
         xaxis=dict(
-            range=[df["year"].min() - 0.5, df["year"].max() + 3],
+            range=[df["year"].min() - 0.5, df["year"].max() + 0.5],
             title="",
             tickmode="linear",
             dtick=4,
@@ -547,9 +545,9 @@ def plot_evolucao_pub_x_priv(con: duckdb.DuckDBPyConnection) -> go.Figure:
     fig.update_layout(
 
         title=dict(
-            text=("Pandemia freou o gasto privado — e embora menor, "
+            text=("Pandemia freou o gasto privado e acelerou o público — que embora menor,"
             "<br>"
-            "o gasto público cresceu mais consistentemente"),
+            "teve o maior crescimento da série histórica"),
             x=0.5,
             y=0.93,
             xanchor="center",
@@ -583,7 +581,7 @@ def plot_evolucao_pub_x_priv(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -596,7 +594,7 @@ def plot_evolucao_pub_x_priv(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 ),
         ],
 
-        margin=dict(b=100),
+        margin=dict(t=90, b=70, r=20, l=20),
 
         template="plotly_white",
 
@@ -675,9 +673,6 @@ def plot_evolucao_financiamento_brasil(con: duckdb.DuckDBPyConnection) -> go.Fig
             x_plot = df["year"]
             y_plot = valores
 
-        y_ini  = valores[valores > 0].iloc[0]  # primeiro valor real
-        y_fim  = valores[valores > 0].iloc[-1] # último valor real
-
         fig.add_trace(go.Scatter(
             x=x_plot,
             y=y_plot,
@@ -693,7 +688,10 @@ def plot_evolucao_financiamento_brasil(con: duckdb.DuckDBPyConnection) -> go.Fig
     fig.update_layout(
 
         title=dict(
-            text=("Planos impulsionaram o financiamento privado por duas décadas, mas a pandemia revelou o SUS como amortecedor real do sistema"),
+            text=(
+                "O crescimento dos planos de saúde impulsionou o financiamento privado por duas décadas,"
+                "<br>"
+                "mas a pandemia revelou o SUS como amortecedor real do sistema"),
             x=0.5,
             xanchor="center",
         ),
@@ -710,7 +708,7 @@ def plot_evolucao_financiamento_brasil(con: duckdb.DuckDBPyConnection) -> go.Fig
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -740,7 +738,7 @@ def plot_evolucao_financiamento_brasil(con: duckdb.DuckDBPyConnection) -> go.Fig
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.02,
+            y=0.95,
             xanchor="center",
             x=0.5,
             traceorder="normal",
@@ -749,7 +747,7 @@ def plot_evolucao_financiamento_brasil(con: duckdb.DuckDBPyConnection) -> go.Fig
         template="plotly_white",
         hovermode="x unified",
         hoverlabel=dict(font_size=13, namelength=-1),
-        margin=dict(b=100, r=80),
+        margin=dict(t=90, b=70, r=20, l=20),
         height=500,
     )
 
@@ -810,9 +808,9 @@ def plot_evolucao_componentes(con: duckdb.DuckDBPyConnection) -> go.Figure:
     fig.update_layout(
 
         title=dict(
-            text=("Mesmo após a pandemia, o o crescimento do gasto em saúde permaneceu concentrado"
+            text=("Mesmo após a pandemia, o crescimento do gasto em saúde"
             "<br>"
-            "em cuidados reativos"),
+            "permaneceu concentrado em cuidados reativos"),
             x=0.5,
             y=0.93,
             xanchor="center",
@@ -830,7 +828,7 @@ def plot_evolucao_componentes(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -843,7 +841,7 @@ def plot_evolucao_componentes(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 ),
         ],
 
-        margin=dict(b=100),
+        margin=dict(t=90, b=70, r=20, l=20),
 
         template="plotly_white",
 
@@ -972,7 +970,7 @@ def plot_razao(con: duckdb.DuckDBPyConnection) -> go.Figure:
                 yref="paper",
 
                 x=0,
-                y=-0.18,
+                y=-0.1,
 
                 xanchor="left",
                 yanchor="top",
@@ -1017,9 +1015,7 @@ def plot_razao(con: duckdb.DuckDBPyConnection) -> go.Figure:
             x=0.5,
         ),
 
-        margin=dict(
-            b=100,
-            r=80,
+        margin=dict(t=90, b=70, r=20, l=20
         ),
 
         height=500,
@@ -1166,7 +1162,7 @@ def plot_gasto_pc_brics(con: duckdb.DuckDBPyConnection) -> go.Figure:
         template="plotly_white",
         hovermode="x unified",
         hoverlabel=dict(font_size=13, namelength=-1),
-        margin=dict(b=60, r=120),
+        margin=dict(t=90, b=70, r=20, l=20), 
         height=500,
     )
 
