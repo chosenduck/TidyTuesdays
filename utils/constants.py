@@ -2,15 +2,6 @@ from matplotlib.ticker import FuncFormatter
 from pathlib import Path
 import world_bank_data as wb
 
-FMT_BI  = FuncFormatter(lambda y, _: f"US$ {y:.0f}bi")
-FMT_PCT = FuncFormatter(lambda y, _: f"{y:.0f}%")
-
-# ─── Grupos de países ─────────────────────────────────────────
-PAISES_BRICS = ("Brazil", "Russian Federation", "India", "China", "South Africa")
-PAISES_UNIVERSAL = ("Brazil", "United Kingdom of Great Britain and Northern Ireland", "Canada", "France", "Spain", "Australia", "Uruguay", "Sweden", "Portugal")
-
-ISO_PAISES = ['BRA', 'RUS', 'IND', 'CHN', 'ZAF', 'FRA', 'ESP', 'GBR', 'CAN', 'URY', 'SWE', 'PRT', 'AUS']
-
 # ─── URLs ─────────────────────────────────────────────────────
 BASE_URL = "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21"
 
@@ -19,6 +10,8 @@ DATA_DIR = Path("data")
 CACHE_DIR = DATA_DIR / "raw"
 DB_DIR = DATA_DIR / "warehouse"
 
+ISO_PAISES = ['BRA', 'RUS', 'IND', 'CHN', 'ZAF', 'FRA', 'ESP', 'GBR', 'CAN', 'URY', 'SWE', 'PRT', 'AUS']
+
 ARQUIVOS = {
     "health_spending":   f"{BASE_URL}/health_spending.csv",
     "financing_schemes": f"{BASE_URL}/financing_schemes.csv",
@@ -26,9 +19,12 @@ ARQUIVOS = {
     "population": wb.get_series('SP.POP.TOTL', country=ISO_PAISES, date='2000:2023').reset_index()
 }
 
-# ─── Textos de rodapé ─────────────────────────────────────────
-FONTE = "Fonte: WHO Global Health Expenditure Database. Elaboração própria."
-NOTA  = "Nota: Valores em US$ constantes de 2023."
+# ─── Grupos de países ─────────────────────────────────────────
+PAISES_BRICS = ("Brazil", "Russian Federation", "India", "China", "South Africa")
+PAISES_UNIVERSAL = ("Brazil", "United Kingdom of Great Britain and Northern Ireland", "Canada", "France", "Spain", "Australia", "Uruguay", "Sweden", "Portugal")
+
+BRICS_ORDEM = ["África do Sul", "Brasil", "China", "Índia", "Rússia"]
+UNIVERSAL_ORDEM = ["Uruguai", "Portugal", "Suécia", "Espanha", "Austrália", "Canadá", "França", "Reino Unido", "Brasil"]
 
 # ─── Tradução de nomes ────────────────────────────────────────
 NOMES_PAISES = {
@@ -122,42 +118,6 @@ MAPA_GRUPAMENTO = {
 ORDEM_GRUPOS = ["Reativo", "Recuperativo/Suporte", "Preventivo/Proativo", "Outros"]
 
 # ─── Paleta de cores ──────────────────────────────────────────
-CORES = {
-    # Fontes de financiamento
-    "governo": "#1f77b4",
-    "privado": "#ff7f0e",
-    "oop":     "#d62728",
-    "externo": "#2ca02c",
-    "outro":   "#999999",
-    # Países — BRICS
-    "Brasil":        "#f4c300",
-    "Rússia":        "#0039a6",
-    "Índia":         "#ff9933",
-    "China":         "#de2910",
-    "África do Sul": "#007749",
-    # Países — sistemas universais
-    "França":        "#3b5aa3",
-    "Espanha":       "#e67e22",
-    "Reino Unido":   "#b22222",
-    "Canadá":        "#8b0000",
-    "Uruguai":       "#5dade2",
-    "Portugal":      "#006600",
-    "Suécia":        "#4682b4",
-    "Austrália":     "#2e8b57",
-    # Spending purpose — grupos
-    "Reativo":              "#d62728",
-    "Recuperativo/Suporte": "#ff7f0e",
-    "Preventivo/Proativo":  "#2ca02c",
-    "Outros_sp":            "#999999",
-}
-
-# Sequências para gráficos empilhados
-CORES_HS_INDIC = [CORES["governo"], CORES["privado"], CORES["externo"]]
-CORES_FS_INDIC = [CORES["governo"], CORES["privado"], CORES["oop"], CORES["externo"], CORES["outro"]]
-CORES_SP_GRUP  = [CORES["Reativo"], CORES["Recuperativo/Suporte"], CORES["Preventivo/Proativo"], CORES["Outros_sp"]]
-
-
-# Paleta de Cores 
 COR_LINHA  = "#3b5aa3"
 COR_BARRAS = "#f4c300"
 COR_EIXOS =  "#a0aec0"
@@ -172,7 +132,12 @@ COMPONENTES = ["SUS", "Planos de Saúde", "Desembolso Direto", "Não Identificad
 
 CORES_FS    = ["#63b3ed", "#fc8181", "#f6ad55", "#a0aec0"]
 
-PAISES_ORDEM = ["África do Sul", "Brasil", "China", "Índia", "Rússia"]
+# Spending purpose — grupos
+COR_REAT = "#2ca02c"
+COR_REC = "#f4c300"
+COR_PREV = "#3b5aa3"
+COR_OUT = "#a0aec0"
+
 CORES_BRICS  = {
         "Brasil":        "#f4c300",
         "China":         "#de2910",
@@ -181,8 +146,20 @@ CORES_BRICS  = {
         "África do Sul": "#007749",
     }
 
-    # Spending purpose — grupos
-COR_REAT = "#2ca02c"
-COR_REC = "#f4c300"
-COR_PREV = "#3b5aa3"
-COR_OUT = "#a0aec0"
+CORES = {
+    # Países — BRICS 
+    "Brasil": "#f4c300", 
+    "Rússia": "#0039a6", 
+    "Índia": "#ff9933", 
+    "China": "#de2910", 
+    "África do Sul": "#007749",
+    # Países — sistemas universais 
+    "França": "#3b5aa3", 
+    "Espanha": "#e67e22", 
+    "Reino Unido": "#b22222", 
+    "Canadá": "#8b0000", 
+    "Uruguai": "#5dade2", 
+    "Portugal": "#006600", 
+    "Suécia": "#4682b4", 
+    "Austrália": "#2e8b57",
+}

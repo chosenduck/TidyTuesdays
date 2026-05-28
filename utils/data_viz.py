@@ -4,10 +4,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from utils.constants import (
-    COR_LINHA, COR_EIXOS,
-    COR_GOV, COR_OUT, COR_PREV, COR_PRIV, COR_NAO, COR_DESEMB, COR_REAT, COR_REC,
-    PAISES_ORDEM, 
-    CORES_BRICS)
+    COR_LINHA, COR_EIXOS, COR_GOV, COR_OUT, COR_PREV, COR_PRIV, COR_NAO, COR_DESEMB, COR_REAT, COR_REC, CORES_BRICS, CORES,
+    PAISES_BRICS, PAISES_UNIVERSAL, BRICS_ORDEM, UNIVERSAL_ORDEM, NOMES_PAISES,
+    )
 
 def metrica_gasto_total(con: duckdb.DuckDBPyConnection) -> dict:
     """
@@ -1023,147 +1022,598 @@ def plot_razao(con: duckdb.DuckDBPyConnection) -> go.Figure:
 
     return fig
 
-def plot_gasto_pc_brics(con: duckdb.DuckDBPyConnection) -> go.Figure:
-    df_brics_pc = con.sql("""
-        SELECT
-            year,
-            CASE country_name
-                WHEN 'Brazil'             THEN 'Brasil'
-                WHEN 'China'              THEN 'China'
-                WHEN 'India'              THEN 'Índia'
-                WHEN 'Russian Federation' THEN 'Rússia'
-                WHEN 'South Africa'       THEN 'África do Sul'
-            END AS pais,
-            gasto_per_capita / 1000000000.0 AS value_bi
-        FROM gold_health_spending_per_capita
-        WHERE country_name IN ('Brazil','China','India','Russian Federation','South Africa')
-            AND indicator_code = 'che_usd2023'
-        ORDER BY year
-    """).df()
+def plot_gasto_pc_comparativo(con: duckdb.DuckDBPyConnection, grupo: str = "BRICS") -> go.Figure:
+    
+    if grupo == "BRICS":
 
-    ano_min = df_brics_pc["year"].min()
-    ano_max = df_brics_pc["year"].max()
+        paises = PAISES_BRICS
 
-    # ── 1. Calcula valores finais de todos os países ──────────
-    valores_finais = {}
-    for pais in PAISES_ORDEM:
-        df_pais = df_brics_pc[df_brics_pc["pais"] == pais]
-        if df_pais.empty:
-            continue
-        valores_finais[pais] = df_pais["value_bi"].iloc[-1]
+        paises_ordem = BRICS_ORDEM
 
-    # ── 2. Calcula annotations com offset anti-sobreposição ───
-    OFFSET_MIN = 25
+        titulo = (
+            "Brasil lidera gasto per capita em saúde no BRICS durante quase toda a série histórica"
+        ) 
 
-    paises_ordenados = sorted(valores_finais, key=lambda p: valores_finais[p])
-    posicoes_usadas  = []
-    annotations_crescimento = []
+    elif grupo == "Sistemas Universais": 
 
-    for pais in paises_ordenados:
-        df_pais = df_brics_pc[df_brics_pc["pais"] == pais]
+        paises = PAISES_UNIVERSAL
 
-        y_ini   = df_pais["value_bi"].iloc[0]
-        y_fim   = valores_finais[pais]
+        paises_ordem = UNIVERSAL_ORDEM
 
-        cresc   = (y_fim / y_ini - 1) * 100
+        titulo = (
+            "Mesmo entre países com sistemas universais, o Brasil mantém gasto per capita inferior"
+        ) 
+    else: 
+        raise ValueError("grupo deve ser 'BRICS' ou 'Sistemas Universais'")
 
-        y_ajustado = y_fim
+    paises_sql = "', '".join(paises)
 
-        tentativa = 0
-        while any(abs(y_ajustado - y) < OFFSET_MIN for y in posicoes_usadas):
+    query = f""" 
+        SELECT 
+            year, 
+            country_name, 
+            gasto_per_capita / 1e9 AS valor 
+            
+        FROM 
+            gold_health_spending_per_capita 
+        
+        WHERE 
+            country_name IN ('{paises_sql}') AND 
+            indicator_code = 'che_usd2023' 
+        
+        ORDER BY 
+            year 
+    """
+    df = con.sql(query).df()
+    df["pais"] = df["country_name"].map(NOMES_PAISES)
+    ano_min = df["year"].min()
+    ano_max = df["year"].max()
 
-            tentativa += 1
-
-            direcao = 1 if tentativa % 2 else -1
-
-            y_ajustado = y_fim + direcao * OFFSET_MIN * tentativa
-
-        posicoes_usadas.append(y_ajustado)
-
-        annotations_crescimento.append(dict(
-            x=ano_max,
-            y=y_ajustado,
-            text=f"<b>+{cresc:.0f}%</b>",
-            xanchor="left", 
-            xshift=8,
-            showarrow=False,
-            font=dict(color=CORES_BRICS[pais], size=11),
-        ))
-
-    # ── 3. Adiciona traces ────────────────────────────────────
     fig = go.Figure()
 
-    for pais in PAISES_ORDEM:
-        df_pais = df_brics_pc[df_brics_pc["pais"] == pais]
-        if df_pais.empty:
-            continue
+    for pais in paises_ordem: 
+        
+        df_pais = df[df["pais"] == pais] 
+        
+        if df_pais.empty: 
+            continue 
+        
+        destaque = pais == "Brasil" 
+        
+        fig.add_trace( 
+            go.Scatter( 
+                x=df_pais["year"], 
+                y=df_pais["valor"], 
+                name=pais, 
+                mode="lines", 
+                line=dict( 
+                    color=CORES[pais], 
+                    width=4 if destaque else 2,
+                ), 
+                opacity=1 if destaque else 0.45,
+            ) 
+        ) 
+        
+    annotations = [] 
 
-        fig.add_trace(go.Scatter(
-            x=df_pais["year"],
-            y=df_pais["value_bi"],
-            name=pais,
-            mode="lines+markers",
-            line=dict(color=CORES_BRICS[pais], width=2),
-            marker=dict(color=CORES_BRICS[pais]),
-            hovertemplate=f"<b>{pais}</b>: US$ %{{y:.0f}}<extra></extra>",
-        ))
+    OFFSET_MIN = 30 
+
+    posicoes_usadas = [] 
+
+    paises_ordenados = sorted( 
+        paises_ordem, 
+        key=lambda p: ( 
+            df[df["pais"] == p]["valor"].iloc[-1] 
+            if not df[df["pais"] == p].empty 
+            else 0 ) 
+    ) 
+    
+    for pais in paises_ordenados: 
+        df_pais = df[df["pais"] == pais] 
+        
+        if df_pais.empty: 
+            continue 
+        
+        valor_final = df_pais["valor"].iloc[-1] 
+        
+        y_ajustado = valor_final 
+        
+        tentativa = 0 
+        
+        while any( 
+            abs(y_ajustado - y) < OFFSET_MIN 
+            for y in posicoes_usadas 
+        ): 
+            tentativa += 1 
+            
+            direcao = 1 if tentativa % 2 else -1 
+            
+            y_ajustado = ( 
+                valor_final + direcao * OFFSET_MIN * tentativa 
+            ) 
+            
+        posicoes_usadas.append(y_ajustado) 
+        annotations.append( 
+            dict( 
+                x=ano_max, 
+                y=y_ajustado, 
+                text=( 
+                    f"<b>{pais}</b>" 
+                    f" — US$ {valor_final:,.0f}" 
+                ).replace(",", "."), 
+                xanchor="left", 
+                xshift=10, 
+                showarrow=False, 
+                font=dict( 
+                    size=11, 
+                    color=CORES[pais], 
+                ), 
+            ) 
+        ) 
+    
+    fig.update_layout( 
+        title=dict( 
+            text=titulo, 
+            x=0.5, 
+            xanchor="center", 
+            font=dict(size=18), 
+        ), 
+        annotations=annotations + [ 
+            # Rodapé
+            dict(
+                text=(
+                    "Fonte: WHO Global Health Expenditure Database. Elaboração própria."
+                    "<br>"
+                    "Nota: Valores em US$ constantes de 2023."
+                    ),
+                xref="paper",
+                yref="paper",
+
+                x=0,
+                y=-0.1,
+
+                xanchor="left",
+                yanchor="top",
+
+                align="left",
+
+                showarrow=False,
+
+                font=dict(size=9),
+                ),
+        ], 
+        
+        xaxis=dict( 
+            range=[ano_min - 0.5, ano_max + 4], 
+            tickmode="linear", 
+            dtick=4, 
+            showgrid=False, 
+        ), 
+        
+        yaxis=dict( 
+            tickprefix="US$ ", 
+            tickformat=",.0f", 
+            showgrid=True,
+            gridcolor="rgba(0,0,0,0.08)", 
+        ), 
+        
+        template="plotly_white",
+        hovermode="x unified", 
+        hoverlabel=dict( 
+            font_size=13, 
+            namelength=-1, 
+        ), 
+        showlegend=False, 
+        margin=dict(t=90, b=120, l=30, r=160), 
+        height=540, 
+    ) 
+    
+    return fig
+
+def plot_perfil_financiamento(con: duckdb.DuckDBPyConnection, grupo: str = "brics") -> go.Figure: 
+    if grupo == "brics":
+        paises = PAISES_BRICS 
+        titulo = ("Mesmo liderando o gasto per capita no BRICS, o financiamento brasileiro segue altamente privado") 
+    elif grupo == "universais": 
+        paises = PAISES_UNIVERSAL 
+        titulo = ("Entre países com sistemas universais, o Brasil possui uma das menores participações públicas") 
+    else: 
+        raise ValueError("grupo deve ser 'brics' ou 'universais'") 
+    paises_sql = "', '".join(paises)
+    query = f""" 
+    WITH ultimo_ano AS ( 
+   
+        SELECT MAX(year) AS ano 
+    
+        FROM silver_health_spending 
+    ) 
+    
+    SELECT 
+        country_name, 
+        indicator_code, 
+        value 
+    
+    FROM 
+        silver_health_spending 
+    
+    WHERE 
+        country_name IN ('{paises_sql}') AND 
+        indicator_code IN ( 'gghed_che', 'pvtd_che', 'oop_che' ) AND 
+        year = ( SELECT ano FROM ultimo_ano ) 
+        
+    """ 
+    df = con.sql(query).df() 
+    df["pais"] = df["country_name"].map(NOMES_PAISES) 
+    indicadores = { 
+        "gghed_che": "Público", 
+        "pvtd_che": "Privado", 
+        "oop_che": "Desembolso Direto", 
+    } 
+    df["componente"] = ( 
+        df["indicator_code"] .map(indicadores) 
+    ) 
+    cores = { 
+        "Público": COR_GOV, 
+        "Privado": COR_PRIV, 
+        "Desembolso Direto": COR_DESEMB, 
+    } 
+    ordem_componentes = [
+        "Público", 
+        "Privado", 
+        "Desembolso Direto"
+    ] 
+    ordem_paises = ( 
+        df[df["componente"] == "Público"]
+        .sort_values("value", ascending=False) 
+        ["pais"]
+        .tolist() 
+    ) 
+
+    fig = go.Figure() 
+    
+    for componente in ordem_componentes: 
+        df_comp = ( 
+            df[df["componente"] == componente] 
+            .set_index("pais") 
+            .reindex(ordem_paises) 
+            .reset_index() ) 
+        fig.add_trace( 
+            go.Bar( 
+                y=df_comp["pais"], 
+                x=df_comp["value"], 
+                name=componente, 
+                orientation="h",
+                marker=dict( 
+                    color=cores[componente] 
+                ), 
+                text=[ 
+                    f"{v:.0f}%" 
+                    if v >= 12 else "" 
+                    for v in df_comp["value"] 
+                ], 
+                textposition="inside", 
+                insidetextanchor="middle"
+            ) 
+        ) 
+    fig.update_layout( 
+        title=dict( 
+            text=titulo, 
+            x=0.5, 
+            xanchor="center", 
+            font=dict(size=18), 
+        ), 
+        barmode="stack", 
+        xaxis=dict( 
+            range=[0, 100], 
+            ticksuffix="%", 
+            showgrid=False, 
+            zeroline=False, 
+        ), 
+        yaxis=dict( 
+            categoryorder="array", 
+            categoryarray=ordem_paises[::-1],
+        ), 
+        legend=dict( 
+            orientation="h", 
+            yanchor="bottom", 
+            y=1.02, 
+            xanchor="center", 
+            x=0.5, ), 
+            annotations=[ 
+                dict( 
+                    text=("Fonte: WHO Global Health Expenditure " "Database. Elaboração própria." ), 
+                    xref="paper", 
+                    yref="paper", 
+                    x=-0.02, 
+                    y=-0.12, 
+                    xanchor="left", 
+                    showarrow=False, 
+                    font=dict(size=10) 
+                ), 
+                dict( 
+                    text=( "Composição do financiamento da saúde " "no último ano disponível." ), 
+                    xref="paper", 
+                    yref="paper", 
+                    x=1, 
+                    y=-0.12, 
+                    xanchor="right", 
+                    showarrow=False, 
+                    font=dict(size=10) 
+                ), 
+            ], 
+            template="plotly_white", 
+            hoverlabel=dict( 
+                font_size=13, 
+                namelength=-1, 
+            ), 
+            margin=dict( t=90, b=120, l=30, r=30, ), 
+            height=550, 
+    ) 
+    
+    return fig
+
+# =========================================================
+# BLOCO 3 — PREVENÇÃO VS REAÇÃO
+# =========================================================
+
+def plot_prevencao_vs_reacao(
+    con: duckdb.DuckDBPyConnection
+) -> go.Figure:
+
+    # -----------------------------------------------------
+    # PAÍSES
+    # -----------------------------------------------------
+
+    paises = list(
+        set(PAISES_BRICS + PAISES_UNIVERSAL)
+    )
+
+    paises_sql = "', '".join(paises)
+
+
+    # -----------------------------------------------------
+    # QUERY
+    # -----------------------------------------------------
+
+    query = f"""
+        WITH ultimo_ano AS (
+
+            SELECT MAX(year) AS ano
+
+            FROM gold_hc1_hc6_ratio
+
+        )
+
+        SELECT
+            country_name,
+            razao_hc1_hc6 AS hc1_hc6_ratio
+
+        FROM gold_hc1_hc6_ratio
+
+        WHERE country_name IN ('{paises_sql}')
+
+            AND year = (
+                SELECT ano
+                FROM ultimo_ano
+            )
+    """
+
+    df = con.sql(query).df()
+
+
+    # -----------------------------------------------------
+    # TRANSFORMAÇÕES
+    # -----------------------------------------------------
+
+    df["pais"] = (
+        df["country_name"]
+        .map(NOMES_PAISES)
+    )
+
+    df = df.sort_values(
+        "hc1_hc6_ratio",
+        ascending=True
+    )
+
+    media_universais = (
+
+        df[
+            df["country_name"]
+            .isin(PAISES_UNIVERSAL)
+        ]
+
+        ["hc1_hc6_ratio"]
+
+        .mean()
+    )
+
+
+    # -----------------------------------------------------
+    # FIGURA
+    # -----------------------------------------------------
+
+    fig = go.Figure()
+
+
+    # -----------------------------------------------------
+    # LOLLIPOPS
+    # -----------------------------------------------------
+
+    for _, row in df.iterrows():
+
+        pais = row["pais"]
+        valor = row["hc1_hc6_ratio"]
+
+        destaque = pais == "Brasil"
+
+        # linha
+        fig.add_shape(
+
+            type="line",
+
+            x0=0,
+            x1=valor,
+
+            y0=pais,
+            y1=pais,
+
+            line=dict(
+                color=(
+                    CORES_PAISES[pais]
+                    if destaque
+                    else "rgba(120,120,120,0.35)"
+                ),
+                width=2,
+            )
+        )
+
+        # ponto
+        fig.add_trace(
+
+            go.Scatter(
+
+                x=[valor],
+                y=[pais],
+
+                mode="markers+text",
+
+                text=[
+                    f"{valor:.1f}x"
+                ],
+
+                textposition="middle right",
+
+                marker=dict(
+                    size=14 if destaque else 10,
+
+                    color=(
+                        CORES_PAISES[pais]
+                        if destaque
+                        else "rgba(120,120,120,0.6)"
+                    ),
+                ),
+
+                showlegend=False,
+
+                hovertemplate=(
+                    f"<b>{pais}</b><br>"
+                    "Razão: %{x:.1f}x"
+                    "<extra></extra>"
+                ),
+            )
+        )
+
+
+    # -----------------------------------------------------
+    # LINHA DE REFERÊNCIA
+    # -----------------------------------------------------
+
+    fig.add_vline(
+
+        x=media_universais,
+
+        line_dash="dash",
+
+        line_color="rgba(0,0,0,0.4)",
+
+        annotation_text=(
+            "Média sistemas universais"
+        ),
+
+        annotation_position="top",
+    )
+
+
+    # -----------------------------------------------------
+    # LAYOUT
+    # -----------------------------------------------------
 
     fig.update_layout(
 
         title=dict(
-            text="Brasil lidera gasto per capita em saúde no BRICS durante quase toda a série histórica",
+            text=(
+                "Países com sistemas universais "
+                "investem proporcionalmente mais em prevenção"
+            ),
+
             x=0.5,
             xanchor="center",
+
+            font=dict(size=18),
         ),
 
-        annotations=annotations_crescimento + [
-            dict(
-                text="Fonte: WHO Global Health Expenditure Database. Elaboração própria.",
-                xref="paper", yref="paper",
-                x=0, y=-0.12,
-                xanchor="left",
-                showarrow=False,
-                font=dict(size=9)
-            ),
-            dict(
-                text="Nota: Valores em US$ constantes de 2023.",
-                xref="paper", yref="paper",
-                x=1, y=-0.12,
-                xanchor="right",
-                showarrow=False,
-                font=dict(size=9)
-            ),
-        ],
-
         xaxis=dict(
-            range=[ano_min - 0.5, ano_max + 1],
-            tickmode="linear",
-            dtick=4,
+
+            title=(
+                "Razão entre gastos reativos "
+                "e preventivos"
+            ),
+
             showgrid=False,
+
+            zeroline=False,
         ),
 
         yaxis=dict(
-            tickformat=".0f",
-            tickprefix="US$ ",
-            ticksuffix="bi",
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.08)",
+            title="",
         ),
 
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1,
-            xanchor="center",
-            x=0.5,
-            bgcolor="rgba(0,0,0,0)",
-        ),
+        annotations=[
+
+            dict(
+                text=(
+                    "Fonte: WHO Global Health Expenditure "
+                    "Database. Elaboração própria."
+                ),
+
+                xref="paper",
+                yref="paper",
+
+                x=-0.02,
+                y=-0.12,
+
+                xanchor="left",
+
+                showarrow=False,
+
+                font=dict(size=10)
+            ),
+
+            dict(
+                text=(
+                    "Valores maiores indicam maior "
+                    "priorização de cuidados reativos."
+                ),
+
+                xref="paper",
+                yref="paper",
+
+                x=1,
+                y=-0.12,
+
+                xanchor="right",
+
+                showarrow=False,
+
+                font=dict(size=10)
+            ),
+        ],
 
         template="plotly_white",
-        hovermode="x unified",
-        hoverlabel=dict(font_size=13, namelength=-1),
-        margin=dict(t=90, b=70, r=20, l=20), 
-        height=500,
+
+        hoverlabel=dict(
+            font_size=13,
+            namelength=-1,
+        ),
+
+        margin=dict(
+            t=90,
+            b=120,
+            l=30,
+            r=30,
+        ),
+
+        height=600,
     )
 
     return fig

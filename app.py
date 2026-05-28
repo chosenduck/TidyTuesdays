@@ -15,7 +15,9 @@ from utils.data_viz import (
     plot_evolucao_financiamento_brasil,
     plot_evolucao_componentes,
     plot_razao,
-    plot_gasto_pc_brics    
+    plot_gasto_pc_comparativo,
+    plot_perfil_financiamento,
+    plot_prevencao_vs_reacao
 )
 
 from utils.constants import COR_RAZAO
@@ -44,6 +46,11 @@ st.title("O Brasil gasta bem em saúde?")
 st.markdown( """ Análise do Global Health Expenditure Database (WHO) — TidyTuesday de 21 Abril de 2026 """ )
 st.caption("por João Victor Fernandes") 
 st.caption("v1.3")
+
+st.markdown("""
+[GitHub](...) • [LinkedIn](...)
+""")
+
 st.divider()
 
 # SEÇÃO 1
@@ -207,19 +214,19 @@ c1, c2 = st.columns(2)
 
 fig = plot_gasto_total_brasil(con) 
 with c1.container(border=True): 
-    st.plotly_chart(fig, use_container_width=True) 
+    st.plotly_chart(fig, width='stretch') 
     
 fig2 = plot_evolucao_pub_x_priv(con) 
 with c2.container(border=True): 
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width='stretch')
 
 fig3 = plot_gasto_pct_brasil(con) 
 with st.container(border=True): 
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3, width='stretch')
 
 fig4 = plot_evolucao_financiamento_brasil(con) 
 with st.container(border=True): 
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig4, width='stretch')
 
 st.divider()
 
@@ -241,20 +248,61 @@ st.divider()
 # SEÇÃO 4
 st.header("O Brasil gasta bem comparado a quem?")
 
-# Gráfico
-#fig5 = plot_gasto_pc_brics(con)
-#with st.container(border=True):
-#    st.plotly_chart(fig5, width='stretch')
+grupo_gasto = st.radio(
+    "Grupo de comparação — gasto per capita",
+    ["BRICS", "Sistemas Universais"],
+    horizontal=True,
+    key="grupo_gasto_pc"
+)
 
-# FOOTER
-st.subheader("Teste")
-teste = con.sql("""
-        SELECT *
-        
-        FROM gold_hc1_hc6_ratio
-        
-        WHERE country_name = 'Brazil'
-                
-        ORDER BY year
-""").df()
-st.dataframe(teste)
+grupo_fin = st.radio(
+    "Grupo de comparação — perfil de financiamento",
+    ["BRICS", "Sistemas Universais"],
+    horizontal=True,
+    key="grupo_financiamento"
+)
+
+
+c1, c2 = st.columns(2)
+
+fig_gasto  = plot_gasto_pc_comparativo(
+    con,
+    grupo="BRICS" if grupo_gasto == "BRICS" else "Sistemas Universais"
+)
+
+with c1.container(border=True):
+    st.plotly_chart(
+        fig_gasto,
+        width="stretch"
+    )
+
+st.markdown("")
+
+
+
+
+fig_fin = plot_perfil_financiamento(
+    con,
+    grupo=(
+        "brics"
+        if grupo_fin == "BRICS"
+        else "universais"
+    )
+)
+
+with c2.container(border=True):
+    st.plotly_chart(
+        fig_fin,
+        width="stretch"
+    )
+
+st.markdown("")
+
+
+fig_prev = plot_prevencao_vs_reacao(con)
+
+with st.container(border=True):
+    st.plotly_chart(
+        fig_prev,
+        width="stretch"
+    )
