@@ -45,11 +45,25 @@ st.set_page_config(
 st.title("O Brasil gasta bem em saúde?")
 st.markdown( """Análise do Global Health Expenditure Database (WHO) — TidyTuesday de 21 Abril de 2026""" )
 st.caption("por João Victor Fernandes") 
-st.caption("v1.3")
+st.caption("v1.4")
 
 st.markdown("""
-[GitHub](...) • [LinkedIn](...)
-""")
+<div style="display:flex; gap:15px; align-items:center;">
+
+<a href="https://github.com/chosenduck" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+         width="28"
+            style="filter: invert(1);">
+</a>
+
+<a href="https://www.linkedin.com/in/jvfqvaz" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"
+         width="28">
+</a>
+
+</div>
+""", unsafe_allow_html=True)
+
 
 st.divider()
 
@@ -248,61 +262,42 @@ st.divider()
 # SEÇÃO 4
 st.header("O Brasil gasta bem comparado a quem?")
 
-grupo_gasto = st.radio(
-    "Grupo de comparação — gasto per capita",
-    ["BRICS", "Sistemas Universais"],
-    horizontal=True,
-    key="grupo_gasto_pc"
-)
-
-grupo_fin = st.radio(
-    "Grupo de comparação — perfil de financiamento",
-    ["BRICS", "Sistemas Universais"],
-    horizontal=True,
-    key="grupo_financiamento"
-)
-
-
 c1, c2 = st.columns(2)
 
-fig_gasto  = plot_gasto_pc_comparativo(
-    con,
-    grupo="BRICS" if grupo_gasto == "BRICS" else "Sistemas Universais"
-)
-
-with c1.container(border=True):
-    st.plotly_chart(
-        fig_gasto,
-        width="stretch"
+with c1:
+    grupo_gasto = st.radio(
+        "Filtro: Gasto per capita",
+        ["BRICS", "Sistemas Universais"],
+        horizontal=True,
+        key="grupo_gasto_pc"
     )
+
+    fig_gasto = plot_gasto_pc_comparativo(
+        con,
+        grupo="BRICS" if grupo_gasto == "BRICS" else "Sistemas Universais"
+    )
+
+    with st.container(border=True):
+        st.plotly_chart(fig_gasto, width='stretch')
+
+with c2:
+    grupo_fin = st.radio(
+        "Filtro: Perfil de financiamento",
+        ["BRICS", "Sistemas Universais"],
+        horizontal=True,
+        key="grupo_financiamento"
+    )
+
+    fig_fin = plot_perfil_financiamento(
+        con,
+        grupo="BRICS" if grupo_fin == "BRICS" else "Sistemas Universais"
+    )
+
+    with st.container(border=True):
+        st.plotly_chart(fig_fin, width='stretch')
 
 st.markdown("")
-
-
-
-
-fig_fin = plot_perfil_financiamento(
-    con,
-    grupo=(
-        "brics"
-        if grupo_fin == "BRICS"
-        else "universais"
-    )
-)
-
-with c2.container(border=True):
-    st.plotly_chart(
-        fig_fin,
-        width="stretch"
-    )
-
-st.markdown("")
-
 
 fig_prev = plot_prevencao_vs_reacao(con)
-
 with st.container(border=True):
-    st.plotly_chart(
-        fig_prev,
-        width="stretch"
-    )
+    st.plotly_chart(fig_prev, width='stretch')
