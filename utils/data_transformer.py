@@ -115,7 +115,10 @@ def criar_camadas_silver(con: duckdb.DuckDBPyConnection) -> None:
     con.execute("""
         CREATE OR REPLACE VIEW silver_population_clean AS
         SELECT
-            Country AS country_name,
+            CASE Country
+                WHEN 'United Kingdom' THEN 'United Kingdom of Great Britain and Northern Ireland'
+                ELSE Country
+            END AS country_name,
 
             CAST(Year AS INTEGER) AS year,
 

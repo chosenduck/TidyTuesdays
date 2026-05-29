@@ -49,61 +49,6 @@ NOMES_PAISES = {
     "Portugal":                                            "Portugal",
 }
 
-# ─── Indicadores — Health Spending ───────────────────────────
-INDICADORES_HS_PCT = ["gghed_che", "pvtd_che", "ext_che"]
-INDICADORES_HS_ABS = ["che_usd2023", "gghed_usd2023", "pvtd_usd2023", "ext_usd2023"]
-
-RENOMEAR_HS = {
-    "gghed_che":    "Governo",
-    "pvtd_che":     "Privado",
-    "ext_che":      "Externo",
-    "che_usd2023":  "Total",
-    "gghed_usd2023":"Governo",
-    "pvtd_usd2023": "Privado",
-    "ext_usd2023":  "Externo",
-}
-
-# ─── Indicadores — Financing Schemes ─────────────────────────
-INDICADORES_FS_PCT = ["hf1_che", "hf2_che", "hf3_che", "hf4_che", "hfnec_che"]
-INDICADORES_FS_ABS = ["hf1_usd2023", "hf2_usd2023", "hf3_usd2023", "hf4_usd2023", "hfnec_usd2023"]
-
-RENOMEAR_FS = {
-    "hf1_che":       "SUS + RPPS",
-    "hf2_che":       "Planos de Saude",
-    "hf3_che":       "Desembolso direto",
-    "hf4_che":       "Ajuda Externa",
-    "hfnec_che":     "Nao Identificado",
-    "hf1_usd2023":   "SUS + RPPS",
-    "hf2_usd2023":   "Planos de Saude",
-    "hf3_usd2023":   "Desembolso direto",
-    "hf4_usd2023":   "Ajuda Externa",
-    "hfnec_usd2023": "Nao Identificado",
-}
-
-# ─── Indicadores — Spending Purpose ──────────────────────────
-INDICADORES_SP_PCT = ["hc1_che","hc2_che","hc3_che","hc4_che","hc5_che","hc6_che","hc7_che","hc9_che"]
-INDICADORES_SP_ABS = ["hc1_usd2023","hc2_usd2023","hc3_usd2023","hc4_usd2023",
-                      "hc5_usd2023","hc6_usd2023","hc7_usd2023","hc9_usd2023"]
-
-RENOMEAR_SP_PT = {
-    "hc1_che":      "Assistencia curativa",
-    "hc2_che":      "Reabilitacao",
-    "hc3_che":      "Cuidados de longa duracao",
-    "hc4_che":      "Servicos auxiliares",
-    "hc5_che":      "Produtos medicos",
-    "hc6_che":      "Prevencao e promocao",
-    "hc7_che":      "Governanca e administracao",
-    "hc9_che":      "Outros",
-    "hc1_usd2023":  "Assistencia curativa",
-    "hc2_usd2023":  "Reabilitacao",
-    "hc3_usd2023":  "Cuidados de longa duracao",
-    "hc4_usd2023":  "Servicos auxiliares",
-    "hc5_usd2023":  "Produtos medicos",
-    "hc6_usd2023":  "Prevencao e promocao",
-    "hc7_usd2023":  "Governanca e administracao",
-    "hc9_usd2023":  "Outros",
-}
-
 MAPA_GRUPAMENTO = {
     "hc1": "Reativo",
     "hc2": "Recuperativo",
@@ -132,7 +77,6 @@ COMPONENTES = ["SUS", "Planos de Saúde", "Desembolso Direto", "Não Identificad
 
 CORES_FS    = ["#63b3ed", "#fc8181", "#f6ad55", "#a0aec0"]
 
-# Spending purpose — grupos
 COR_REAT = "#2ca02c"
 COR_REC = "#f4c300"
 COR_PREV = "#3b5aa3"
@@ -142,14 +86,14 @@ CORES_BRICS  = {
         "Brasil":        "#f4c300",
         "China":         "#de2910",
         "Índia":         "#ff9933",
-        "Rússia":        "#3b5aa3",
+        "Rússia":        "#a0aec0",
         "África do Sul": "#007749",
     }
 
 CORES = {
     # Países — BRICS 
     "Brasil": "#f4c300", 
-    "Rússia": "#0039a6", 
+    "Rússia": "#a0aec0", 
     "Índia": "#ff9933", 
     "China": "#de2910", 
     "África do Sul": "#007749",
