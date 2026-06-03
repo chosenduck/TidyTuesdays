@@ -1055,9 +1055,10 @@ def plot_gasto_pc_comparativo(con: duckdb.DuckDBPyConnection, grupo: str = "BRIC
     fig.update_layout( 
         title=dict( 
             text=titulo, 
-            x=0.5, 
+            x=0.5,
+            y=0.97, 
             xanchor="center", 
-            font=dict(size=18), 
+            font=dict(size=14), 
         ), 
 
         legend=dict(
@@ -1117,15 +1118,15 @@ def plot_perfil_financiamento(con: duckdb.DuckDBPyConnection, grupo: str = "BRIC
     
     if grupo == "BRICS":
         paises = PAISES_BRICS 
-        titulo = ("Em 2023, a Rússia assume a liderança do BRICS com financiamento majoritariamente público, "
+        titulo = ("Rússia assume a liderança do BRICS com financiamento majoritariamente público,"
         "<br>"
         "enquanto o Brasil mantém maior dependência do setor privado") 
     
     elif grupo == "Sistemas Universais": 
         paises = PAISES_UNIVERSAL 
-        titulo = ("Países com sistemas universais concentram o financiamento da saúde no setor público "
+        titulo = ("Países com sistemas universais concentram o financiamento da saúde "
         "<br>"
-        "— o Brasil é exceção") 
+        "no setor público — o Brasil é exceção") 
     
     else: 
         raise ValueError("Grupo deve ser 'BRICS' ou 'Sistemas Universais'.") 
@@ -1232,9 +1233,9 @@ def plot_perfil_financiamento(con: duckdb.DuckDBPyConnection, grupo: str = "BRIC
         title=dict( 
             text=titulo, 
             x=0.5, 
-            y=0.94,
+            y=0.97,
             xanchor="center", 
-            font=dict(size=18), 
+            font=dict(size=14), 
         ),
 
         barmode="stack", 
