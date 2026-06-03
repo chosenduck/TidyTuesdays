@@ -935,12 +935,16 @@ def plot_gasto_pc_comparativo(con: duckdb.DuckDBPyConnection, grupo: str = "BRIC
     if grupo == "BRICS":
         paises = PAISES_BRICS
         paises_ordem = BRICS_ORDEM
-        titulo = ("China e Rússia convergem rapidamente para o patamar brasileiro, ameaçando a liderança histórica") 
+        titulo = ("China e Rússia convergem rapidamente para o patamar brasileiro, "
+        "<br>"
+        "ameaçando a liderança histórica") 
 
     elif grupo == "Sistemas Universais": 
         paises = PAISES_UNIVERSAL
         paises_ordem = UNIVERSAL_ORDEM
-        titulo = ("Mesmo após duas décadas de expansão, o gasto per capita brasileiro segue abaixo dos pares universais") 
+        titulo = ("Mesmo após duas décadas de expansão, "
+        "<br>"
+        "o gasto per capita brasileiro segue abaixo dos pares universais") 
     
     else: 
         raise ValueError("Grupo deve ser 'BRICS' ou 'Sistemas Universais'.")
