@@ -1,0 +1,24 @@
+# Ambientes Virtuais
+.venv/
+venv/
+ENV/
+
+# Caches do Python
+__pycache__/
+*.pyc
+
+# Dados
+data/
+data/cache/
+data/raw
+data/warehouse
+
+# Caches do Streamlit e IDEs
+.streamlit/
+.ipynb_checkpoints/
+.vscode/
+
+# Outros
+desktop.ini
+.DS_Store
+guia_git.md

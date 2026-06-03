@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+pyarrow
+openpyxl
+world_bank_data
+duckdb
+requests
