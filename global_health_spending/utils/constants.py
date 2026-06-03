@@ -63,13 +63,13 @@ MAPA_GRUPAMENTO = {
 ORDEM_GRUPOS = ["Reativo", "Recuperativo/Suporte", "Preventivo/Proativo", "Outros"]
 
 # ─── Paleta de cores ──────────────────────────────────────────
-COR_LINHA  = "#CCE5FF"
+COR_LINHA  = "#63b3ed"
 COR_BARRAS = "#F9F5E6"
-COR_EIXOS =  "#a0aec0"
+COR_EIXOS =  "#F9F5E6"
 
-COR_GOV  = "#26422b"
-COR_PRIV = "#F9F5E6"
-COR_DESEMB = "#CCE5FF"
+COR_GOV  = "#007749"
+COR_PRIV = "#f4c300"
+COR_DESEMB = "#63b3ed"
 COR_NAO = "#a0aec0"
 COR_RAZAO = "#c03927"
 
@@ -77,10 +77,10 @@ COMPONENTES = ["SUS", "Planos de Saúde", "Desembolso Direto", "Não Identificad
 
 CORES_FS    = ["#63b3ed", "#fc8181", "#f6ad55", "#a0aec0"]
 
-COR_REAT = "#26422b"
-COR_REC = "#E0DBCE"
-COR_PREV = "#CCE5FF"
-COR_OUT = "#a0aec0"
+COR_REAT = "#007749"
+COR_REC = "#f4c300"
+COR_PREV = "#63b3ed"
+COR_OUT = "#F9F5E6"
 
 CORES_BRICS  = {
         "Brasil":        "#f4c300",
