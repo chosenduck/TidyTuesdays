@@ -29,7 +29,7 @@ executar_transformacoes(con)
 # CONFIGURAÇÃO DA PÁGINA
 # Carregando style.css
 def carregar_estilos():
-    with open("assets/style.css") as f:
+    with open("global_health_spending/assets/style.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 carregar_estilos()
