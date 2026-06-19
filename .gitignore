@@ -2,19 +2,19 @@
 .venv/
 venv/
 ENV/
+.env
 
 # Caches do Python
 __pycache__/
 *.pyc
 
 # Dados
-data/
 data/cache/
 data/raw
-data/warehouse
 
 # Caches do Streamlit e IDEs
 .streamlit/
+.streamlit/secrets.toml
 .ipynb_checkpoints/
 .vscode/
 

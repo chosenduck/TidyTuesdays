@@ -9,3 +9,4 @@ openpyxl
 world_bank_data
 duckdb
 requests
+python-dotenv
