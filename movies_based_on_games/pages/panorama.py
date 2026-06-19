@@ -282,7 +282,7 @@ with col_card:
     if ano_selecionado is None:
         st.markdown(
             """
-            <div style="height:650px;display:flex;flex-direction:column;
+            <div style="height:300px;display:flex;flex-direction:column;
                         align-items:center;justify-content:center;
                         background:#1a2228;border-radius:6px;
                         color:#8a9bb0;font-size:0.78rem;text-align:center;padding:1rem;">
