@@ -268,7 +268,7 @@ with col_chart:
         paper_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#8a9bb0"),
         margin=dict(t=10, b=10),
-        height=700,
+        height=300,
     )
     fig.update_xaxes(showgrid=False, color="#8a9bb0")
     fig.update_yaxes(gridcolor="rgba(128,128,128,0.12)", zeroline=False, color="#8a9bb0")
