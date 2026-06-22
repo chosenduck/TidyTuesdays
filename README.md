@@ -6,8 +6,9 @@ Repositório com minhas soluções para os desafios semanais do TidyTuesday, uti
 
 | Data | Projeto | Descrição |
 |------|---------|-----------|
-| 21.04.26 | O Brasil gasta bem em saúde? | Dashboard sobre gastos em saúde do Brasil (2000 - 2023) baseado nos dados da OMS |
-| 09.06.26 | Do Console para o Cinema | Dashboard sobre filmes baseados em videogames, com base em uma raspagem da Wikipedia | 
+| 21.04.26 | O Brasil gasta bem em saúde? | Dashboard sobre gastos em saúde do Brasil (2000 - 2023) baseado nos dados da OMS. |
+| 09.06.26 | Do Console para o Cinema | Dashboard sobre filmes baseados em videogames, com base em uma raspagem da Wikipedia. | 
+| 23.06.26 | Beatles e nomes de bebês no Reino Unido | Visualização sobre como as músicas dos beatles ecoam em nomes de bebês no Reino Unido (1997 a 2024). |
 
 ## 🛠️ Como Executar um Projeto
 
